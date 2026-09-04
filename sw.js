@@ -1,7 +1,9 @@
 /* Punch Checklist PWA — offline-first service worker.
-   Caches the app shell + jsPDF so everything works with no connection. */
+   Strategy: NETWORK-FIRST with cache fallback. Online visits always get
+   the newest deployed files (updates go live immediately); when offline,
+   everything is served from the cache. Bump CACHE on breaking changes. */
 
-const CACHE = "punch-checklist-v1";
+const CACHE = "punch-checklist-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -28,13 +30,14 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   e.respondWith(
-    caches.match(e.request).then(hit =>
-      hit ||
-      fetch(e.request).then(res => {
+    fetch(e.request)
+      .then(res => {
         const copy = res.clone();
         caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
         return res;
-      }).catch(() => caches.match("./index.html"))
-    )
+      })
+      .catch(() =>
+        caches.match(e.request).then(hit => hit || caches.match("./index.html"))
+      )
   );
 });
