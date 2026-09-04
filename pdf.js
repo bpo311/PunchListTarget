@@ -18,7 +18,7 @@ async function buildChecklistPDF(cl) {
 
   let y = M;
   const store = cl.storeNumber || "TXXXX";
-  const heading = `${store} CBAR Flooring Projects Checklist`;
+  const heading = "CBAR Flooring Projects Checklist";
   const headingNote = "PML to complete with vendor";
 
   /* ---------- primitives ---------- */
@@ -99,7 +99,7 @@ async function buildChecklistPDF(cl) {
     ? new Date(cl.completionDate + "T00:00:00").toLocaleDateString() : "";
   rect(M, y, 66, 16); rect(M + 66, y, 200, 16);
   rect(M + 266, y, 92, 16); rect(M + 358, y, W - 358, 16);
-  setFont(7.5, true); doc.text("Store T#:", M + 4, y + 11);
+  setFont(7.5, true); doc.text("Store #:", M + 4, y + 11);
   setFont(8, false); doc.text(cl.storeNumber || "", M + 70, y + 11);
   setFont(7.5, true); doc.text("Completion Date:", M + 270, y + 11);
   setFont(8, false); doc.text(dateTxt, M + 362, y + 11);

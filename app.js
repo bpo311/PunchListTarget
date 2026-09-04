@@ -218,7 +218,7 @@ function renderChecklist() {
     </div>
     <div class="doc-wrap"><div class="doc">
       <div class="info-row">
-        <div class="field"><label>Store T#:</label>
+        <div class="field"><label>Store #:</label>
           <input value="${esc(cl.storeNumber)}" oninput="setField('storeNumber', this.value)" style="width:180px"></div>
         <div class="field"><label>Completion Date:</label>
           <input type="date" value="${esc(cl.completionDate)}" onchange="setField('completionDate', this.value, true)"></div>
