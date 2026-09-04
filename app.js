@@ -444,28 +444,6 @@ function updateWarn() {
 /* Punch checklist PDFs are always emailed to Interior Surface. */
 const EMAIL_TO = "target@interiorsurface.com";
 
-/* Direct-send endpoint (Cloudflare Worker — see email-worker/README.md).
-   When set, EMAIL PDF sends the PDF straight to EMAIL_TO with no composer.
-   When empty, the app falls back to the share/mailto flow. */
-const EMAIL_ENDPOINT = "";   // e.g. "https://punch-mailer.YOURNAME.workers.dev"
-
-/* Sends the PDF directly via the configured endpoint. Returns true on
-   success. Checklist data is never affected by a failed send. */
-async function sendDirect(blob, fileName, store) {
-  const pdfBase64 = await new Promise(res => {
-    const fr = new FileReader();
-    fr.onload = () => res(fr.result.split(",")[1]);
-    fr.readAsDataURL(blob);
-  });
-  const resp = await fetch(EMAIL_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ fileName, pdfBase64, store })
-  });
-  if (!resp.ok) throw new Error("send failed: " + resp.status);
-  return true;
-}
-
 async function doAction(kind) {
   persistAll(checklists);                          // final automatic save
   const n = unanswered(current);
@@ -495,22 +473,6 @@ async function doAction(kind) {
   const file = new File([blob], fileName, { type: "application/pdf" });
   const store = current.storeNumber || "TXXXX";
   const bodyText = `Please see the attached completed vendor punch checklist for Store ${store}.`;
-
-  if (kind === "email" && EMAIL_ENDPOINT) {
-    // Direct send — no composer, no manual steps.
-    try {
-      setBadge("saving");
-      await sendDirect(blob, fileName, store);
-      setBadge("saved");
-      alert(`PDF sent to ${EMAIL_TO}`);
-      markPDF();
-      return;
-    } catch (e) {
-      setBadge("saved");
-      alert(`Direct email failed (${e.message}). Opening the share sheet instead — the PDF is attached.`);
-      // fall through to the share flow below
-    }
-  }
 
   if (kind === "email") {
     // The Web Share sheet cannot pre-fill a recipient, so put the address
