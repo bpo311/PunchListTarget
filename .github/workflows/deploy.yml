@@ -1,0 +1,46 @@
+# Deploys the Punch Checklist PWA to GitHub Pages on every push to main.
+#
+# This is a plain static application (no package manager, no build step),
+# so the workflow simply uploads the repository contents as the Pages
+# artifact. If a bundler is ever introduced, add setup-node / install /
+# build steps before the upload and point `path` at the build output.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true   # auto-enables GitHub Pages on first run
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Punch Checklist</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="styles.css">
+<!-- jsPDF (cached offline by the service worker after first load) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- PDF preview modal -->
+<div id="previewModal" class="modal hidden">
+  <div class="modal-bar">
+    <button class="btn-plain" onclick="closePreview()">Done</button>
+    <span class="modal-title">PDF Preview</span>
+    <span></span>
+  </div>
+  <iframe id="previewFrame" title="PDF Preview"></iframe>
+</div>
+
+<!-- Signature capture modal -->
+<div id="sigModal" class="modal hidden">
+  <div class="modal-bar">
+    <button class="btn-plain" onclick="cancelSignature()">Cancel</button>
+    <span class="modal-title" id="sigModalTitle">Signature</span>
+    <span></span>
+  </div>
+  <div class="sig-stage">
+    <div class="sig-pad-wrap">
+      <canvas id="sigCanvas"></canvas>
+      <div class="sig-baseline"></div>
+      <div class="sig-hint">Sign above the line — finger or Apple Pencil</div>
+    </div>
+    <div class="sig-actions">
+      <button class="btn outline" onclick="clearSignature()">CLEAR</button>
+      <button class="btn outline" onclick="cancelSignature()">CANCEL</button>
+      <button class="btn" onclick="saveSignature()">SAVE SIGNATURE</button>
+    </div>
+  </div>
+</div>
+
+<script src="pdf.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

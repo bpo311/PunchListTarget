@@ -1,0 +1,17 @@
+# Secrets — never commit
+.env
+.env.*
+*.pem
+*.key
+*.p12
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log
+.vscode/
+.idea/
+
+# Dependency folders (none used today; guard for the future)
+node_modules/
